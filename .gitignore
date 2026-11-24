@@ -1,0 +1,23 @@
+# Credentials and account configuration
+clients.json
+
+# Real or generated data (the repository only holds code)
+meta_daily_*.json
+meta_full_listing_*.json
+meta_results/
+ghl_*.json
+perf_*.json
+ad_status.json
+abtests.json
+update_log.txt
+backups/
+dashboard.html
+pruebas/datos.js
+pruebas/registros.json
+pruebas/notas_originales.csv
+
+# Noise
+__pycache__/
+*.tmp
+.DS_Store
+._*

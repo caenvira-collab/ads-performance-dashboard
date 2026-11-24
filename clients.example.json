@@ -1,0 +1,10 @@
+{
+  "FCI":   {"loc": "YOUR_GHL_LOCATION_ID", "key": "YOUR_GHL_PRIVATE_INTEGRATION_TOKEN", "meta": "YOUR_META_AD_ACCOUNT_ID", "tz": "America/New_York"},
+  "AB":    {"loc": "YOUR_GHL_LOCATION_ID", "key": "YOUR_GHL_PRIVATE_INTEGRATION_TOKEN", "meta": "YOUR_META_AD_ACCOUNT_ID", "tz": "America/New_York"},
+  "BAIP":  {"loc": "YOUR_GHL_LOCATION_ID", "key": "YOUR_GHL_PRIVATE_INTEGRATION_TOKEN", "meta": "YOUR_META_AD_ACCOUNT_ID", "tz": "America/New_York"},
+  "MCDIC": {"loc": "YOUR_GHL_LOCATION_ID", "key": "YOUR_GHL_PRIVATE_INTEGRATION_TOKEN", "meta": "YOUR_META_AD_ACCOUNT_ID", "tz": "America/New_York"},
+  "MDIC":  {"loc": "YOUR_GHL_LOCATION_ID", "key": "YOUR_GHL_PRIVATE_INTEGRATION_TOKEN", "meta": "YOUR_META_AD_ACCOUNT_ID", "tz": "America/New_York"},
+  "WLA":   {"loc": "YOUR_GHL_LOCATION_ID", "key": "YOUR_GHL_PRIVATE_INTEGRATION_TOKEN", "meta": "YOUR_META_AD_ACCOUNT_ID", "tz": "America/New_York"},
+  "PDC":   {"loc": "YOUR_GHL_LOCATION_ID", "key": "YOUR_GHL_PRIVATE_INTEGRATION_TOKEN", "meta": "YOUR_META_AD_ACCOUNT_ID", "tz": "America/New_York"},
+  "CSSD":  {"loc": "YOUR_GHL_LOCATION_ID", "key": "YOUR_GHL_PRIVATE_INTEGRATION_TOKEN", "meta": "YOUR_META_AD_ACCOUNT_ID", "tz": "America/New_York"}
+}

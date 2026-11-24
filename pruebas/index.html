@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ads dashboard · Historial de pruebas</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;color:#1a1a1a;font-size:13px}
+.header{background:#fff;border-bottom:1px solid #e0e0e0;padding:12px 20px 0;display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.header h1{font-size:16px;font-weight:600;padding-bottom:12px}
+.header .gen{font-size:11px;color:#888;padding-bottom:13px;margin-left:auto}
+.tabs{display:flex;gap:2px;margin-left:18px}
+.tabs a{font-size:13px;color:#555;text-decoration:none;padding:8px 14px 10px;border-bottom:2px solid transparent}
+.tabs a:hover{color:#1a1a1a}
+.tabs a.on{color:#1a73e8;border-bottom-color:#1a73e8;font-weight:600}
+.container{padding:16px 20px;max-width:1500px;margin:0 auto}
+.fbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px}
+.flabel{font-size:11px;color:#888;min-width:70px;text-transform:uppercase;letter-spacing:.5px}
+button.chip{font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;color:#444;display:inline-flex;align-items:center;gap:6px}
+button.chip:hover{border-color:#999}
+button.chip.on{background:#1a1a1a;border-color:#1a1a1a;color:#fff}
+button.chip.sec.on{background:#e8f0fe;border-color:#1a73e8;color:#1a73e8}
+button.chip .n{font-size:10px;background:#d93025;color:#fff;border-radius:10px;padding:0 6px}
+input[type=search]{padding:3px 12px;border:1px solid #ddd;border-radius:20px;font-size:12px;height:28px;width:240px;background:#fff}
+.alerta{background:#fdecea;border:1px solid #f5c2bd;border-radius:8px;padding:10px 14px;margin:10px 0;font-size:12px;line-height:1.5}
+.alerta b{color:#b3261e}
+.alerta .an{font-size:11px;color:#6b3a36;word-break:break-word}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.panel{background:#fff;border:1px solid #e0e0e0;border-radius:8px;margin-top:12px;overflow:hidden}
+.grid2 .panel{margin-top:0}
+.panel-hdr{padding:10px 14px;border-bottom:1px solid #f0f0f0;display:flex;flex-wrap:wrap;gap:10px;align-items:baseline}
+.panel-hdr h3{font-size:13px;font-weight:600}
+.panel-hdr .s{font-size:11px;color:#888}
+.lista{padding:6px 14px 10px}
+.lista .it{padding:5px 0;border-bottom:1px solid #f5f5f5;display:flex;gap:8px;align-items:baseline}
+.lista .it:last-child{border-bottom:none}
+.lista .tp{font-size:10px;color:#888;min-width:96px;text-transform:uppercase;letter-spacing:.3px}
+.lista .vv{flex:1}
+.lista .cc{font-size:11px;color:#888;white-space:nowrap}
+table{border-collapse:collapse;width:100%;font-size:12px}
+th,td{padding:7px 10px;text-align:left;border-bottom:1px solid #f0f0f0;vertical-align:top}
+th{color:#888;font-weight:500;background:#fafafa;white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.var{cursor:pointer}
+tr.var:hover td{background:#fafbff}
+tr.var.ab td{background:#f3f6fd}
+.idhl{font-size:10px;color:#999;display:block;margin-top:1px}
+.est{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.e-ok{background:#e6f4ea;color:#137333}
+.e-no{background:#fce8e6;color:#b3261e}
+.e-mx{background:#fef7e0;color:#8a5a00}
+.e-dc{background:#e8f0fe;color:#1a56c4}
+.e-in{background:#f1f3f4;color:#5f6368}
+.camp{display:inline-block;font-size:10px;padding:1px 6px;border-radius:4px;background:#f1f3f4;color:#444;margin:1px 3px 1px 0;white-space:nowrap}
+.camp.falta{background:#fff;border:1px dashed #ccc;color:#999}
+.det td{background:#fcfcfc;padding:0}
+.det .wrap{padding:8px 14px 12px 24px}
+.reg{border-left:3px solid #ddd;padding:6px 10px;margin:6px 0;background:#fff;border-radius:0 6px 6px 0}
+.reg.g{border-left-color:#34a853}.reg.p{border-left-color:#d93025}.reg.i{border-left-color:#9aa0a6}
+.reg .mt{font-size:11px;color:#666;margin-bottom:3px}
+.reg .mt b{color:#1a1a1a}
+.reg .vs{font-size:11px;color:#444;margin-bottom:3px}
+.reg .tx{font-size:11px;color:#555;white-space:pre-wrap;line-height:1.45;background:#f8f9fa;padding:5px 8px;border-radius:4px}
+.debil{font-size:10px;color:#8a5a00;font-weight:600}
+.vacio{text-align:center;padding:30px;color:#aaa}
+.pegar{padding:12px 14px}
+.pegar textarea{width:100%;min-height:110px;border:1px solid #ddd;border-radius:6px;padding:8px 10px;font:12px/1.45 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;resize:vertical}
+.pegar .fila{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.pegar select{font-size:12px;padding:4px 8px;border:1px solid #ddd;border-radius:6px;background:#fff}
+.pegar button{font-size:12px;padding:6px 14px;border-radius:20px;border:1px solid #1a73e8;background:#1a73e8;color:#fff;cursor:pointer}
+.pegar .ok{font-size:11px;color:#137333}
+.pegar .ay{font-size:11px;color:#888;line-height:1.5;margin-top:8px}
+.nota-orig{padding:10px 14px;border-bottom:1px solid #f3f3f3}
+.nota-orig .h{font-size:11px;color:#888;margin-bottom:4px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.nota-orig .tx{white-space:pre-wrap;font-size:12px;line-height:1.5}
+.nota-orig .cl{margin-top:5px;font-size:11px;color:#555}
+.ayuda{font-size:11px;color:#888;line-height:1.55;margin:6px 0 0}
+.base{padding:10px 14px;display:grid;grid-template-columns:150px 1fr;gap:4px 12px;font-size:12px}
+.base .k{color:#888;font-size:11px;text-transform:uppercase;letter-spacing:.3px;padding-top:1px}
+.base .f{font-size:10px;color:#999}
+.props{padding:6px 14px 12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:10px}
+.prop{border:1px solid #e8e8e8;border-radius:8px;padding:10px 12px;background:#fff}
+.prop .t{display:flex;gap:8px;align-items:center;font-weight:600;font-size:12px;margin-bottom:6px}
+.prop .t .tp{font-weight:400;color:#888;font-size:11px;margin-left:auto}
+.prop .ln{font-size:12px;line-height:1.5;margin:3px 0}
+.prop .ln b{font-weight:600}
+.prop .lb{color:#888;font-size:11px}
+.p-alta{background:#e6f4ea;color:#137333}.p-media{background:#fef7e0;color:#8a5a00}.p-baja{background:#f1f3f4;color:#5f6368}
+.falta-l{padding:8px 14px 12px 30px;font-size:12px;line-height:1.6}
+.falta-l li{margin:2px 0}
+td.nom{max-width:520px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:700px){.props{grid-template-columns:1fr}.base{grid-template-columns:1fr}}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+@media (max-width:700px){.container{padding:12px}input[type=search]{width:100%}.tabs{margin-left:0}.header .gen{display:none}}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Ads dashboard</h1>
+  <nav class="tabs">
+    <a href="../dashboard.html">Rendimiento</a>
+    <a href="index.html" class="on">Historial de pruebas</a>
+  </nav>
+  <span class="gen" id="gen"></span>
+</div>
+<div class="container">
+  <div class="fbar"><span class="flabel">Cliente</span><span id="f-cli"></span></div>
+  <div class="fbar"><span class="flabel">Vista</span><span id="f-vista"></span></div>
+  <div class="fbar" id="bar-camp"><span class="flabel">Campaña</span><span id="f-camp"></span></div>
+  <div class="fbar" id="bar-tipo"><span class="flabel">Variable</span><span id="f-tipo"></span></div>
+  <div class="fbar" id="bar-q"><span class="flabel">Buscar</span><input type="search" id="q" placeholder="Texto de la variable o de la nota"></div>
+  <div id="alerta-cli"></div>
+  <div id="vista"></div>
+</div>
+<script src="datos.js"></script>
+<script>
+const P = window.PRUEBAS;
+const S = {cli: P.clientes[0], vista: 'cliente', camp: null, tipo: 'todos', q: '', abiertos: new Set()};
+const VISTAS = [['cliente', 'Todo el cliente'], ['campana', 'Por campaña'], ['siguiente', 'Qué probar después'], ['notas', 'Notas originales'], ['alertas', 'Alertas']];
+const ORDEN_TIPOS = ['hl', 'callout', 'boton', 'loc', 'pb', 'ps', 'badge', 'intro', 'precio', 'formato', 'cre'];
+
+function leerLS(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function grabarLS(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c])); }
+function etiqueta(t, v) { return t === 'hl' ? ((P.hls[v] || {}).texto || v) : v; }
+function key(t, v) { return t + '|' + v; }
+
+(function init() {
+  const c = leerLS('pruebas_cli'); if (c && P.clientes.includes(c)) S.cli = c;
+  const v = leerLS('pruebas_vista'); if (v && VISTAS.some(x => x[0] === v)) S.vista = v;
+  document.getElementById('gen').textContent = 'Datos al ' + P.generado + ' · ' + P.registros.length + ' registros';
+  document.getElementById('q').addEventListener('input', e => { S.q = e.target.value.trim().toLowerCase(); pintar(); });
+  pintar();
+})();
+
+function regsCliente() { return P.registros.filter(r => r.cliente === S.cli); }
+
+// Junta los registros por variante: a favor, en contra, campañas, creativos y estado.
+function agregar(regs, incluirCre) {
+  const m = new Map();
+  for (const r of regs) {
+    const lados = [['g', r.gana], ['p', r.pierde]];
+    for (const [lado, arr] of lados) for (const [t, v] of arr) {
+      if (t === 'cre' && !incluirCre) continue;
+      const k = key(t, v);
+      if (!m.has(k)) m.set(k, {t, v, w: 0, l: 0, wd: 0, ld: 0, inc: 0, camps: new Set(), regs: [], porCre: new Map()});
+      const a = m.get(k);
+      a.regs.push({r, lado});
+      a.camps.add(r.campana);
+      const ck = r.cre || '(sin creativo indicado)';
+      if (!a.porCre.has(ck)) a.porCre.set(ck, {w: 0, l: 0});
+      if (r.r === 'inconcluso') { a.inc++; continue; }
+      const deb = r.conf === 'debil';
+      if (lado === 'g') { a.w++; if (deb) a.wd++; a.porCre.get(ck).w++; }
+      else { a.l++; if (deb) a.ld++; a.porCre.get(ck).l++; }
+    }
+  }
+  for (const a of m.values()) {
+    a.saldo = (a.w - a.wd * 0.5) - (a.l - a.ld * 0.5);
+    a.estado = estado(a);
+  }
+  return [...m.values()];
+}
+
+function estado(a) {
+  if (a.regs.some(x => x.r.r === 'regla')) return ['No usar (regla)', 'e-no'];
+  if (a.w === 0 && a.l === 0) return ['Inconcluso', 'e-in'];
+  if (a.w > 0 && a.l === 0) return ['Funciona', 'e-ok'];
+  if (a.l > 0 && a.w === 0) return ['No funciona', 'e-no'];
+  if (a.t === 'hl') return ['Resultados opuestos', 'e-mx'];
+  const mismo = [...a.porCre.entries()].some(([c, x]) => c !== '(sin creativo indicado)' && x.w > 0 && x.l > 0);
+  if (mismo) return ['Contradicción con el mismo creativo', 'e-mx'];
+  return ['Depende del creativo', 'e-dc'];
+}
+
+function pasaBusqueda(a) {
+  if (!S.q) return true;
+  if (etiqueta(a.t, a.v).toLowerCase().includes(S.q) || a.v.toLowerCase().includes(S.q)) return true;
+  return a.regs.some(x => (P.notas[x.r.nid] || '').toLowerCase().includes(S.q));
+}
+
+function chips(id, items, actual, fn, cls) {
+  const el = document.getElementById(id);
+  el.innerHTML = items.map(([v, l, extra]) => `<button class="chip ${cls || ''} ${v === actual ? 'on' : ''}" data-v="${esc(v)}">${esc(l)}${extra || ''}</button>`).join(' ');
+  el.querySelectorAll('button').forEach(b => b.onclick = () => fn(b.dataset.v));
+}
+
+function pintar() {
+  const nAl = P.alertas.length;
+  chips('f-cli', P.clientes.map(c => [c, c, P.alertas.some(a => a.cliente === c) ? ' <span class="n">!</span>' : '']), S.cli, v => { S.cli = v; S.camp = null; S.abiertos.clear(); grabarLS('pruebas_cli', v); pintar(); });
+  chips('f-vista', VISTAS.map(([v, l]) => [v, l, v === 'alertas' && nAl ? ` <span class="n">${nAl}</span>` : '']), S.vista, v => { S.vista = v; S.abiertos.clear(); grabarLS('pruebas_vista', v); pintar(); }, 'sec');
+  const camps = campanasCliente();
+  if (!S.camp || !camps.includes(S.camp)) S.camp = camps.find(k => regsCliente().some(r => r.campana === k)) || camps[0];
+  document.getElementById('bar-camp').style.display = (S.vista === 'campana' || S.vista === 'notas' || S.vista === 'siguiente') ? '' : 'none';
+  chips('f-camp', camps.map(k => [k, k + ' (' + regsCliente().filter(r => r.campana === k).length + ')']), S.camp, v => { S.camp = v; S.abiertos.clear(); pintar(); }, 'sec');
+  document.getElementById('bar-tipo').style.display = (S.vista === 'cliente' || S.vista === 'campana') ? '' : 'none';
+  const tipos = ORDEN_TIPOS.filter(t => S.vista === 'campana' || t !== 'cre');
+  if (!tipos.includes(S.tipo) && S.tipo !== 'todos') S.tipo = 'todos';
+  chips('f-tipo', [['todos', 'Todas']].concat(tipos.map(t => [t, P.tipos[t]])), S.tipo, v => { S.tipo = v; pintar(); }, 'sec');
+  document.getElementById('bar-q').style.display = (S.vista === 'alertas' || S.vista === 'siguiente') ? 'none' : '';
+  pintarAlertaCliente();
+  const el = document.getElementById('vista');
+  if (S.vista === 'cliente') el.innerHTML = vistaCliente();
+  else if (S.vista === 'campana') el.innerHTML = vistaCampana();
+  else if (S.vista === 'siguiente') el.innerHTML = vistaSiguiente();
+  else if (S.vista === 'notas') el.innerHTML = vistaNotas();
+  else el.innerHTML = vistaAlertas();
+  enlazar();
+}
+
+function campanasCliente() {
+  const s = new Set(P.campanas[S.cli] || []);
+  regsCliente().forEach(r => s.add(r.campana));
+  const orden = ['Lower Funnel', 'T1D', 'ThinArch', 'PrecisionArch', 'Zygomatic', 'Fear'];
+  return [...s].sort((a, b) => (orden.indexOf(a) + 1 || 99) - (orden.indexOf(b) + 1 || 99));
+}
+
+function pintarAlertaCliente() {
+  const al = P.alertas.filter(a => a.cliente === S.cli);
+  const el = document.getElementById('alerta-cli');
+  if (!al.length || S.vista === 'alertas') { el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="alerta"><b>Alerta:</b> ${al.length === 1 ? 'hay 1 caso' : 'hay ' + al.length + ' casos'} del callout "${esc(al[0].texto)}" fuera de ${esc(al[0].solo_en)} en ${esc(S.cli)}.` +
+    al.map(a => a.fuente === 'Meta'
+      ? `<div class="an">${a.activo ? '<b>ACTIVO</b>' : 'Inactivo'} · ${esc(a.campana)} · ${esc(a.desde)} a ${esc(a.hasta)} · $${a.gasto.toFixed(2)} · ${esc(a.nombre)}</div>`
+      : `<div class="an">En las notas: ${esc(a.campana)} (${esc(a.nid)})</div>`).join('') + '</div>';
+}
+
+function resumenMejores(ag) {
+  const por = (signo) => ORDEN_TIPOS.filter(t => t !== 'cre').map(t => {
+    const xs = ag.filter(a => a.t === t && (signo > 0 ? a.saldo > 0 && a.l === 0 : a.saldo < 0 && a.w === 0))
+      .sort((a, b) => signo > 0 ? b.saldo - a.saldo : a.saldo - b.saldo).slice(0, 3);
+    return xs.map(a => `<div class="it"><span class="tp">${esc(P.tipos[t])}</span><span class="vv">${esc(etiqueta(a.t, a.v))}</span><span class="cc">${signo > 0 ? a.w + ' a favor' : a.l + ' en contra'} · ${[...a.camps].map(esc).join(', ')}</span></div>`).join('');
+  }).join('');
+  const bien = por(1), mal = por(-1);
+  return `<div class="grid2">
+    <div class="panel"><div class="panel-hdr"><h3>Lo que mejor ha funcionado en ${esc(S.cli)}</h3><span class="s">Sin ningún resultado en contra. Hasta 3 por variable.</span></div><div class="lista">${bien || '<div class="vacio">Sin datos</div>'}</div></div>
+    <div class="panel"><div class="panel-hdr"><h3>Lo que no ha funcionado</h3><span class="s">Sin ningún resultado a favor. Hasta 3 por variable.</span></div><div class="lista">${mal || '<div class="vacio">Sin datos</div>'}</div></div>
+  </div>`;
+}
+
+function tablaTipo(t, ag, campsCli, mostrarFaltan) {
+  const xs = ag.filter(a => a.t === t && pasaBusqueda(a)).sort((a, b) => b.saldo - a.saldo || b.w - a.w);
+  if (!xs.length) return '';
+  const filas = xs.map(a => {
+    const k = key(a.t, a.v), ab = S.abiertos.has(k);
+    const faltan = mostrarFaltan && t !== 'cre' ? campsCli.filter(c => !a.camps.has(c)) : [];
+    const deb = (n, d) => n + (d ? ` <span class="debil">(${d} débil)</span>` : '');
+    return `<tr class="var ${ab ? 'ab' : ''}" data-k="${esc(k)}">
+      <td>${esc(etiqueta(a.t, a.v))}${a.t === 'hl' ? `<span class="idhl">${esc(a.v)}</span>` : ''}</td>
+      <td class="num">${deb(a.w, a.wd)}</td><td class="num">${deb(a.l, a.ld)}</td>
+      <td><span class="est ${a.estado[1]}">${esc(a.estado[0])}</span>${a.inc ? ` <span class="est e-in">${a.inc} inconcluso</span>` : ''}</td>
+      <td>${[...a.camps].map(c => `<span class="camp">${esc(c)}</span>`).join('')}${faltan.map(c => `<span class="camp falta" title="Sin probar en esta campaña">${esc(c)}</span>`).join('')}</td>
+    </tr>${ab ? `<tr class="det"><td colspan="5"><div class="wrap">${detalle(a)}</div></td></tr>` : ''}`;
+  }).join('');
+  const nota = t === 'hl' ? 'El headline no depende del creativo: un resultado a favor y otro en contra es una contradicción real.'
+    : t === 'cre' ? 'Los creativos no se intercambian entre campañas.'
+    : 'Este resultado depende del creativo con el que se emparejó. Abre la fila para ver cada caso.';
+  return `<div class="panel"><div class="panel-hdr"><h3>${esc(P.tipos[t])}</h3><span class="s">${xs.length} variantes · ${nota}</span></div>
+    <div style="overflow-x:auto"><table><thead><tr><th>Variante</th><th class="num">A favor</th><th class="num">En contra</th><th>Estado</th><th>Campañas${mostrarFaltan && t !== 'cre' ? ' (punteadas: sin probar)' : ''}</th></tr></thead><tbody>${filas}</tbody></table></div></div>`;
+}
+
+function detalle(a) {
+  return a.regs.map(({r, lado}) => {
+    const cls = r.r === 'inconcluso' ? 'i' : (lado === 'g' ? 'g' : 'p');
+    const res = r.r === 'inconcluso' ? 'Inconcluso' : r.r === 'regla' ? 'Regla: no usar' : lado === 'g' ? (r.r === 'mejor' ? 'Señalado como lo mejor' : 'Ganó') : (r.r === 'malo' ? 'Señalado como malo' : 'Perdió');
+    const otros = (lado === 'g' ? r.pierde : r.gana).map(([t, v]) => etiqueta(t, v));
+    const junto = (lado === 'g' ? r.gana : r.pierde).filter(([t, v]) => !(t === a.t && v === a.v)).map(([t, v]) => etiqueta(t, v));
+    return `<div class="reg ${cls}"><div class="mt"><b>${esc(res)}</b> · ${esc(r.campana)}${r.area ? ' · ' + esc(r.area) : ''}${r.cre ? ' · Creativo: <b>' + esc(r.cre) + '</b>' : ''}${r.conf === 'debil' ? ' · <span class="debil">débil</span>' : ''}${r.cond ? ' · ' + esc(r.cond) : ''}</div>
+      ${otros.length ? `<div class="vs">${lado === 'g' ? 'Contra' : 'Le ganó'}: ${otros.map(esc).join(' · ')}</div>` : ''}
+      ${junto.length ? `<div class="vs">En la misma nota, del mismo lado: ${junto.map(esc).join(' · ')}</div>` : ''}
+      <div class="tx">${esc(P.notas[r.nid] || '')}</div></div>`;
+  }).join('');
+}
+
+function cajaPegar(campFija) {
+  const camps = campanasCliente();
+  const draft = leerLS('pruebas_draft_' + S.cli) || '';
+  return `<div class="panel"><div class="panel-hdr"><h3>Pegar notas nuevas de ${esc(S.cli)}</h3><span class="s">Pega el texto tal cual. El botón lo copia con el cliente y la campaña para que me lo pases en el chat.</span></div>
+    <div class="pegar"><textarea id="pg-tx" placeholder="Ejemplo: Book A Free Consult fake button performs better than Book Your Consult on Standard T1D">${esc(draft)}</textarea>
+    <div class="fila"><select id="pg-camp">${camps.map(c => `<option ${c === campFija ? 'selected' : ''}>${esc(c)}</option>`).join('')}<option>Varias campañas</option></select>
+    <button id="pg-btn">Copiar para Claude</button><span class="ok" id="pg-ok"></span></div>
+    <div class="ay">Después escribe en el chat "actualiza las pruebas" y pega. Yo clasifico cada nota, la agrego al historial y vuelvo a armar esta página. El borrador queda guardado solo en este navegador.</div></div></div>`;
+}
+
+function vistaCliente() {
+  const regs = regsCliente();
+  if (!regs.length) return '<div class="panel"><div class="vacio">Todavía no hay notas de este cliente.</div></div>' + cajaPegar();
+  const ag = agregar(regs, false);
+  const camps = campanasCliente();
+  const tipos = S.tipo === 'todos' ? ORDEN_TIPOS.filter(t => t !== 'cre') : [S.tipo];
+  const tablas = tipos.map(t => tablaTipo(t, ag, camps, true)).join('');
+  return (S.tipo === 'todos' && !S.q ? resumenMejores(ag) : '') +
+    `<p class="ayuda">Reúne las pruebas de todas las campañas de ${esc(S.cli)}, sin los creativos. "A favor" cuenta las veces que la variante ganó o se nombró como la mejor. "En contra" cuenta las veces que perdió o se nombró como mala. Las notas débiles (pocos números, "seems") valen la mitad para ordenar. Haz clic en una fila para ver las notas.</p>` +
+    (tablas || '<div class="panel"><div class="vacio">Nada coincide con el filtro.</div></div>') + cajaPegar();
+}
+
+function vistaCampana() {
+  const regs = regsCliente().filter(r => r.campana === S.camp);
+  if (!regs.length) return `<div class="panel"><div class="vacio">Todavía no hay notas de ${esc(S.cli)} ${esc(S.camp)}.</div></div>` + cajaPegar(S.camp);
+  const ag = agregar(regs, true);
+  const tipos = S.tipo === 'todos' ? ORDEN_TIPOS : [S.tipo];
+  const tablas = tipos.map(t => tablaTipo(t, ag, [], false)).join('');
+  return `<p class="ayuda">Solo ${esc(S.cli)} ${esc(S.camp)}, con creativos incluidos.</p>` + (tablas || '<div class="panel"><div class="vacio">Nada coincide con el filtro.</div></div>') + cajaPegar(S.camp);
+}
+
+// ── Qué probar después (por campaña) ─────────────────────────────────────────
+// Formato y diseño queda fuera: va pegado al creativo (video, estático, posición del banner).
+const TIPOS_INT = ['hl', 'callout', 'boton', 'loc', 'pb', 'ps', 'badge', 'intro', 'precio'];
+const SOLO_DE_ESTA = new Set(['intro']);
+function norm(v) { return String(v).toLowerCase().replace(/[+\s]/g, ''); }
+const ORD_PRI = {Alta: 0, Media: 1, Baja: 2};
+function veces(n) { return n === 1 ? '1 vez' : n + ' veces'; }
+function lista(xs) { return xs.length <= 1 ? (xs[0] || '') : xs.slice(0, -1).join(', ') + ' y ' + xs[xs.length - 1]; }
+function esGenerica(v) { return /^Con /.test(v); }
+function sinTexto(t, v) { return t === 'hl' && /pendiente/.test(etiqueta(t, v)); }
+function enOtrosClientes(t, v) {
+  let w = 0, l = 0; const cls = new Set();
+  P.registros.forEach(r => { if (r.cliente === S.cli || r.r === 'inconcluso') return;
+    if (r.gana.some(x => x[0] === t && x[1] === v)) { w++; cls.add(r.cliente); }
+    if (r.pierde.some(x => x[0] === t && x[1] === v)) { l++; cls.add(r.cliente); } });
+  return {w, l, txt: w || l ? ` En otros clientes (${lista([...cls])}) ganó ${veces(w)} y perdió ${veces(l)}.` : ''};
+}
+
+function campeon(t, agK, agCli) {
+  const enK = agK.filter(a => a.t === t && a.saldo > 0).sort((a, b) => b.saldo - a.saldo || b.w - a.w)[0];
+  if (enK) return {a: enK, fuente: 'esta campaña'};
+  if (t === 'cre' || SOLO_DE_ESTA.has(t)) return null;
+  const enCli = agCli.filter(a => a.t === t && a.saldo > 0 && a.l === 0).sort((a, b) => b.saldo - a.saldo || b.w - a.w)[0];
+  return enCli ? {a: enCli, fuente: 'mejor del cliente en otras campañas'} : null;
+}
+
+function oponentes(a) {
+  const s = new Set();
+  a.regs.forEach(({r, lado}) => (lado === 'g' ? r.pierde : r.gana).forEach(([t, v]) => { if (t === a.t) s.add(etiqueta(t, v)); }));
+  return [...s];
+}
+
+function vistaSiguiente() {
+  const K = S.camp;
+  const regsK = regsCliente().filter(r => r.campana === K);
+  const agK = agregar(regsK, true);
+  const agCli = agregar(regsCliente(), false);
+  const agOtros = agregar(regsCliente().filter(r => r.campana !== K), false);
+  const agOtrosCli = agregar(P.registros.filter(r => r.cliente !== S.cli), false).filter(a => a.t === 'hl');
+  const excl = new Set(P.exclusivos.filter(e => e.solo_en !== K).map(e => key(e.tipo, e.etiqueta)));
+  const vetado = new Set(agCli.filter(a => a.estado[0] === 'No usar (regla)' || (a.w === 0 && a.l > a.ld)).map(a => key(a.t, a.v)));
+  const rh = ((P.rinde_hoy[S.cli] || {}).campanas || {})[K] || [];
+  const rango = (P.rinde_hoy[S.cli] || {}).rango || {};
+
+  // Base: lo mejor conocido por variable.
+  const base = {};
+  ['cre'].concat(TIPOS_INT).forEach(t => { const c = campeon(t, agK, agCli); if (c) base[t] = c; });
+  const topActivo = rh.find(x => x.activo) || rh[0];
+  const baseCre = base.cre ? etiqueta('cre', base.cre.a.v) : (topActivo ? 'El anuncio activo con más good leads: ' + topActivo.cod : 'Sin dato');
+
+  // Propuestas: cambiar una sola variable sobre la base.
+  const props = [];
+  for (const t of TIPOS_INT) {
+    const probadas = new Set(agK.filter(a => a.t === t).map(a => norm(a.v)));
+    if (base[t]) probadas.add(norm(base[t].a.v));
+    for (const a of agOtros.filter(x => x.t === t && x.saldo > 0)) {
+      const k = key(a.t, a.v);
+      if (probadas.has(norm(a.v)) || excl.has(k) || vetado.has(k) || esGenerica(a.v) || sinTexto(t, a.v)) continue;
+      const firmes = a.w - a.wd;
+      const oc = t === 'hl' ? enOtrosClientes(t, a.v) : {w: 0, l: 0, txt: ''};
+      let pri = t === 'hl' && a.l === 0 && firmes >= 1 ? 'Alta' : (firmes === 0 ? 'Baja' : 'Media');
+      if (oc.l > oc.w) pri = 'Baja';
+      const cres = [...new Set(a.regs.filter(x => x.lado === 'g' && x.r.cre).map(x => x.r.cre))];
+      const por = `Ganó ${veces(a.w)} en ${lista([...a.camps])}${a.l ? ` y perdió ${veces(a.l)}` : ''}` +
+        (t === 'hl' ? '. El headline rinde igual con cualquier creativo, por eso lo aprendido en otra campaña sirve aquí.' + oc.txt + (oc.l > oc.w ? ' Por eso la bajé a prioridad baja.' : '') :
+          (cres.length ? `, con ${lista(cres)}. Como depende del creativo, el resultado aquí puede cambiar.` : '. Como depende del creativo, el resultado aquí puede cambiar.'));
+      props.push({pri, score: a.saldo + (t === 'hl' ? 2 : 0), tipo: 'Traer de otra campaña', t, nuevo: etiqueta(t, a.v), por});
+    }
+  }
+  const hlCli = new Set(agCli.filter(a => a.t === 'hl').map(a => a.v));
+  for (const a of agOtrosCli.filter(x => x.saldo > 0 && x.l === 0 && !hlCli.has(x.v) && !sinTexto('hl', x.v))) {
+    const cls = [...new Set(a.regs.map(x => x.r.cliente))];
+    props.push({pri: 'Baja', score: a.saldo * 0.5, tipo: 'Funcionó en otro cliente', t: 'hl', nuevo: etiqueta('hl', a.v),
+      por: `Nunca se probó en ${S.cli}. Ganó ${veces(a.w)} en ${lista(cls)}. Es otro mercado, por eso va con prioridad baja.`});
+  }
+  for (const a of agK.filter(x => x.t !== 'cre' && x.w > 0 && x.l === 0 && x.w === x.wd && !esGenerica(x.v) && !sinTexto(x.t, x.v))) {
+    props.push({pri: 'Media', score: 1, tipo: 'Confirmar', t: a.t, nuevo: etiqueta(a.t, a.v),
+      por: `Ganó ${veces(a.w)} en esta campaña, siempre con pocos números o con un "seems". Vale repetirla con más gasto antes de darla por buena.`});
+  }
+  props.sort((x, y) => ORD_PRI[x.pri] - ORD_PRI[y.pri] || y.score - x.score);
+  const elegidas = props.slice(0, 6);
+
+  const desemp = agK.filter(a => a.estado[0] === 'Resultados opuestos' || a.estado[0] === 'Contradicción con el mismo creativo').map(a => {
+    const cres = [...new Set(a.regs.map(x => x.r.cre).filter(Boolean))];
+    return {pri: a.t === 'hl' ? 'Alta' : 'Media', a, opp: oponentes(a), cres};
+  }).sort((x, y) => ORD_PRI[x.pri] - ORD_PRI[y.pri]).slice(0, 4);
+
+  const card = (n, p, cuerpo) => `<div class="prop"><div class="t">Prueba ${n} <span class="est p-${p.pri.toLowerCase()}">Prioridad ${p.pri}</span><span class="tp">${esc(p.tipo)}</span></div>${cuerpo}
+    <div class="ln lb">Cambia solo esta variable. Compara good leads y citas por cada dólar cuando ambas versiones lleven un gasto parecido.</div></div>`;
+  let n = 0;
+  const htmlProps = elegidas.map(p => {
+    const actual = base[p.t] && p.tipo !== 'Confirmar' ? etiqueta(p.t, base[p.t].a.v) : null;
+    const cambio = p.tipo === 'Confirmar' ? `Repetir ${esc(P.tipos[p.t])} "${esc(p.nuevo)}" contra lo que lleva hoy el anuncio base`
+      : actual && actual !== p.nuevo ? `${esc(P.tipos[p.t])}: "${esc(actual)}" contra "${esc(p.nuevo)}"`
+      : `${esc(P.tipos[p.t])}: agregar "${esc(p.nuevo)}"`;
+    return card(++n, p, `<div class="ln"><b>Cambio:</b> ${cambio}</div><div class="ln"><b>Sobre:</b> ${esc(baseCre)}</div><div class="ln"><b>Por qué:</b> ${esc(p.por)}</div>`);
+  }).join('');
+  const htmlDes = desemp.map(d => card(++n, {pri: d.pri, tipo: 'Desempatar'},
+    `<div class="ln"><b>Cambio:</b> ${esc(P.tipos[d.a.t])}: "${esc(etiqueta(d.a.t, d.a.v))}" contra "${esc(d.opp[0] || 'la variante que le ganó')}"</div>
+     <div class="ln"><b>Sobre:</b> ${esc(d.a.t === 'hl' ? baseCre : (d.cres[0] || baseCre))}</div>
+     <div class="ln"><b>Por qué:</b> En esta campaña ganó ${veces(d.a.w)} y perdió ${veces(d.a.l)}${d.a.t === 'hl' ? ', y un headline rinde igual con cualquier creativo' : ' con el mismo creativo'}. Hace falta una prueba limpia que cambie solo esto.</div>`)).join('');
+
+  const filasBase = ['cre'].concat(TIPOS_INT).filter(t => t === 'cre' || base[t]).map(t => t === 'cre'
+    ? `<div class="k">${esc(P.tipos.cre)}</div><div>${esc(baseCre)} <span class="f">${base.cre ? '(según tus notas de esta campaña)' : '(según el dashboard)'}</span></div>`
+    : `<div class="k">${esc(P.tipos[t])}</div><div>${esc(etiqueta(t, base[t].a.v))} <span class="f">(${esc(base[t].fuente)})</span></div>`).join('');
+
+  const filasRh = rh.map(x => `<tr><td>${esc(x.cod)}</td><td>${x.activo ? '<span class="est e-ok">Activo</span>' : '<span class="est e-in">Inactivo</span>'}</td><td class="num">$${Number(x.gasto).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td class="num">${x.ul}</td><td class="num">${x.gl}</td><td class="num">${x.citas}</td><td class="nom" title="${esc(x.nombre)}">${esc(x.nombre)}</td></tr>`).join('');
+
+  const evitar = agCli.filter(a => vetado.has(key(a.t, a.v)) && !esGenerica(a.v)).sort((a, b) => b.l - a.l).slice(0, 12)
+    .concat(agK.filter(a => a.t === 'cre' && a.w === 0 && a.l > a.ld))
+    .map(a => `<div class="it"><span class="tp">${esc(P.tipos[a.t])}</span><span class="vv">${esc(etiqueta(a.t, a.v))}</span><span class="cc">${a.estado[0] === 'No usar (regla)' ? 'Regla' : veces(a.l) + ' en contra'} · ${[...a.camps].map(esc).join(', ')}</span></div>`).join('');
+
+  // Lo que falta saber de esta campaña.
+  const falta = [];
+  if (!regsK.length) falta.push(`No tengo notas de ${S.cli} ${K}. Todo lo de arriba sale de las otras campañas del cliente y de los números del dashboard.`);
+  const sinNotas = TIPOS_INT.filter(t => !agK.some(a => a.t === t));
+  if (regsK.length && sinNotas.length) falta.push(`En esta campaña no hay notas de: ${lista(sinNotas.map(t => P.tipos[t].toLowerCase()))}.`);
+  if (!base.cre) falta.push('Tus notas de esta campaña no dicen qué creativo rinde mejor. Usé el anuncio activo con más good leads del dashboard.');
+  const deb = regsK.filter(r => r.conf === 'debil').length;
+  if (deb) falta.push(`${deb} de ${regsK.length} notas de esta campaña se basan en pocos números. Con el gasto y los leads de cada versión podría separarlas de las firmes.`);
+  const pend = [...new Set(elegidas.concat(Object.values(base).map(b => ({t: b.a.t, nuevo: etiqueta(b.a.t, b.a.v)}))).filter(p => p.t === 'hl' && /pendiente/.test(p.nuevo)).map(p => p.nuevo))];
+  if (pend.length) falta.push(`Falta el texto de: ${lista(pend)}.`);
+  if (desemp.length) falta.push(`Hay ${desemp.length === 1 ? 'una variable' : desemp.length + ' variables'} con resultados opuestos aquí. Con las fechas o los números de cada nota podría decir cuál pesa más.`);
+  if (rh.length) falta.push('Los anuncios del dashboard todavía no están ligados a sus variables. Con una tabla de anuncio a variables podría medir cada variable con los unique leads, good leads y citas reales.');
+
+  return `<p class="ayuda">Propuestas para ${esc(S.cli)} ${esc(K)}. Salen de tus notas de todo el cliente y de los anuncios del dashboard de los últimos 30 días. Cada prueba cambia una sola variable sobre la mejor combinación conocida. Los headlines van primero porque lo que funciona en una campaña sirve en las demás. Las propuestas se recalculan solas cada vez que agregas notas.</p>
+  <div class="panel"><div class="panel-hdr"><h3>Así rinde hoy ${esc(K)}</h3><span class="s">Anuncios con gasto del ${esc(rango.start || '')} al ${esc(rango.end || '')}, ordenados por good leads</span></div>
+    ${filasRh ? `<div style="overflow-x:auto"><table><thead><tr><th>Código</th><th>Estado</th><th class="num">Gasto</th><th class="num">UL</th><th class="num">GL</th><th class="num">Citas</th><th>Anuncio</th></tr></thead><tbody>${filasRh}</tbody></table></div>` : '<div class="vacio">Sin gasto en los últimos 30 días.</div>'}</div>
+  <div class="panel"><div class="panel-hdr"><h3>Combinación base</h3><span class="s">Lo mejor que se sabe hoy por variable. Las pruebas de abajo cambian una pieza a la vez.</span></div><div class="base">${filasBase}</div></div>
+  <div class="panel"><div class="panel-hdr"><h3>Qué probaría a continuación</h3><span class="s">${elegidas.length + desemp.length} pruebas, de mayor a menor prioridad</span></div>
+    ${htmlProps || htmlDes ? `<div class="props">${htmlProps}${htmlDes}</div>` : '<div class="vacio">Sin variables nuevas para traer a esta campaña. Hace falta alimentar más notas.</div>'}</div>
+  <div class="grid2" style="margin-top:12px">
+    <div class="panel"><div class="panel-hdr"><h3>No repetiría</h3><span class="s">Perdieron sin ningún resultado a favor en ${esc(S.cli)}</span></div><div class="lista">${evitar || '<div class="vacio">Nada por ahora.</div>'}</div></div>
+    <div class="panel"><div class="panel-hdr"><h3>Lo que me falta saber de esta campaña</h3></div><ul class="falta-l">${falta.map(f => `<li>${esc(f)}</li>`).join('') || '<li>Nada puntual.</li>'}</ul></div>
+  </div>
+  <div class="panel"><div class="panel-hdr"><h3>Datos que harían mejores estas recomendaciones</h3><span class="s">Valen para todas las campañas</span></div>
+    <ul class="falta-l">
+      <li>Los números de cada prueba: gasto, unique leads, good leads y citas de cada versión, cuántos días corrió y qué métrica decidió.</li>
+      <li>Si la prueba cambió una sola variable o varias a la vez. Las notas con tres cambios juntos (como la de BAIP del 04/15) impiden saber cuál movió el resultado.</li>
+      <li>Qué variables lleva cada anuncio activo. Si el nombre del anuncio siempre las trae completas, puedo leerlas de Meta y cruzarlas con el dashboard sin que me las pases.</li>
+      <li>El presupuesto que hay para probar en cada campaña y el gasto mínimo que le das a una versión antes de decidir.</li>
+      <li>Cambios de área, oferta, landing o formulario con su fecha. Mueven los resultados aunque la variable siga igual.</li>
+      <li>Los textos de HL4, HL4 Receive, Receive Price y ONLY HL.</li>
+      <li>Piezas ya diseñadas que nunca se han probado (callouts, badges o botones nuevos), para incluirlas como candidatas.</li>
+    </ul></div>`;
+}
+
+function vistaNotas() {
+  const regs = regsCliente().filter(r => r.campana === S.camp);
+  const porNota = new Map();
+  regs.forEach(r => { if (!porNota.has(r.nid)) porNota.set(r.nid, []); porNota.get(r.nid).push(r); });
+  const items = [...porNota.entries()].filter(([nid]) => !S.q || (P.notas[nid] || '').toLowerCase().includes(S.q)).map(([nid, rs]) => {
+    const cl = rs.map(r => {
+      const g = r.gana.map(([t, v]) => etiqueta(t, v)), p = r.pierde.map(([t, v]) => etiqueta(t, v));
+      const tag = r.r === 'obs' ? 'Observación sin variable' : r.r === 'inconcluso' ? 'Inconcluso' : '';
+      return `<div class="cl">${tag ? esc(tag) : ''}${g.length ? '<span class="est e-ok">a favor</span> ' + g.map(esc).join(' · ') + ' ' : ''}${p.length ? '<span class="est e-no">en contra</span> ' + p.map(esc).join(' · ') : ''}${r.cre ? ' · Creativo: ' + esc(r.cre) : ''}${r.conf === 'debil' ? ' · <span class="debil">débil</span>' : ''}</div>`;
+    }).join('');
+    return `<div class="nota-orig"><div class="h"><span>${esc(nid)}</span>${rs[0].area ? '<span class="camp">' + esc(rs[0].area) + '</span>' : ''}<span>${esc(rs[0].origen || '')}</span></div><div class="tx">${esc(P.notas[nid])}</div>${cl}</div>`;
+  }).join('');
+  return `<div class="panel"><div class="panel-hdr"><h3>Notas originales de ${esc(S.cli)} ${esc(S.camp)}</h3><span class="s">Texto tal cual lo pegaste, con cómo lo clasifiqué debajo.</span></div>${items || '<div class="vacio">Sin notas</div>'}</div>` + cajaPegar(S.camp);
+}
+
+function vistaAlertas() {
+  const al = P.alertas;
+  const ex = P.exclusivos.map(e => `"${esc(e.etiqueta)}" solo se puede usar en ${esc(e.solo_en)}`).join('. ');
+  const filas = al.map(a => a.fuente === 'Meta'
+    ? `<tr><td>${esc(a.cliente)}</td><td>${esc(a.campana)}</td><td>${a.activo ? '<span class="est e-no">ACTIVO</span>' : '<span class="est e-in">Inactivo</span>'}</td><td class="num">${esc(a.desde)} a ${esc(a.hasta)}</td><td class="num">$${a.gasto.toFixed(2)}</td><td>${esc(a.nombre)}<span class="idhl">Anuncio ${esc(a.ad_id)}</span></td></tr>`
+    : `<tr><td>${esc(a.cliente)}</td><td>${esc(a.campana)}</td><td><span class="est e-mx">En notas</span></td><td></td><td></td><td>${esc(P.notas[a.nid] || a.nid)}</td></tr>`).join('');
+  const ag = agregar(regsCliente(), false).filter(a => a.estado[0] === 'Resultados opuestos' || a.estado[0] === 'Contradicción con el mismo creativo');
+  const contra = ag.map(a => `<tr class="var ${S.abiertos.has(key(a.t, a.v)) ? 'ab' : ''}" data-k="${esc(key(a.t, a.v))}"><td>${esc(P.tipos[a.t])}</td><td>${esc(etiqueta(a.t, a.v))}</td><td class="num">${a.w}</td><td class="num">${a.l}</td><td><span class="est e-mx">${esc(a.estado[0])}</span></td></tr>` +
+    (S.abiertos.has(key(a.t, a.v)) ? `<tr class="det"><td colspan="5"><div class="wrap">${detalle(a)}</div></td></tr>` : '')).join('');
+  return `<div class="panel"><div class="panel-hdr"><h3>Callouts exclusivos usados fuera de su campaña</h3><span class="s">${ex}. Se revisa solo en cada actualización del dashboard, con los nombres de los anuncios en Meta.</span></div>
+    ${al.length ? `<div style="overflow-x:auto"><table><thead><tr><th>Cliente</th><th>Campaña</th><th>Estado</th><th class="num">Con gasto</th><th class="num">Gasto</th><th>Anuncio</th></tr></thead><tbody>${filas}</tbody></table></div>` : '<div class="vacio">Sin casos.</div>'}</div>
+    <div class="panel"><div class="panel-hdr"><h3>Contradicciones en ${esc(S.cli)}</h3><span class="s">Headlines con resultados opuestos y variables que ganaron y perdieron con el mismo creativo. Haz clic para ver las notas.</span></div>
+    ${contra ? `<div style="overflow-x:auto"><table><thead><tr><th>Variable</th><th>Variante</th><th class="num">A favor</th><th class="num">En contra</th><th>Estado</th></tr></thead><tbody>${contra}</tbody></table></div>` : '<div class="vacio">Sin contradicciones.</div>'}</div>`;
+}
+
+function enlazar() {
+  document.querySelectorAll('tr.var').forEach(tr => tr.onclick = () => {
+    const k = tr.dataset.k; S.abiertos.has(k) ? S.abiertos.delete(k) : S.abiertos.add(k); pintar();
+  });
+  const tx = document.getElementById('pg-tx');
+  if (tx) {
+    tx.oninput = () => grabarLS('pruebas_draft_' + S.cli, tx.value);
+    document.getElementById('pg-btn').onclick = async () => {
+      const camp = document.getElementById('pg-camp').value;
+      const texto = `Actualiza las pruebas de ${S.cli}, campaña ${camp}:\n\n${tx.value.trim()}`;
+      const ok = document.getElementById('pg-ok');
+      if (!tx.value.trim()) { ok.textContent = 'Primero pega una nota.'; return; }
+      try { await navigator.clipboard.writeText(texto); ok.textContent = 'Copiado. Pégalo en el chat.'; }
+      catch (e) { tx.value = texto; tx.select(); ok.textContent = 'Selecciona y copia el texto con Cmd+C.'; }
+    };
+  }
+}
+</script>
+</body>
+</html>
